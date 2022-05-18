@@ -1,0 +1,66 @@
+defaultTasks 'clean', 'test', 'aggregate'
+
+
+repositories 
+{    
+    mavenCentral()
+    jcenter()
+	google()
+}
+
+ buildscript {
+ repositories {
+ maven {
+      url "https://plugins.gradle.org/m2/"
+       }
+ }
+ dependencies {
+ classpath "net.serenity-bdd:serenity-gradle-plugin:3.2.4"
+ }
+ }
+ 
+apply plugin: 'groovy'
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: "net.serenity-bdd.serenity-gradle-plugin"
+apply plugin: 'net.serenity-bdd.aggregator'
+
+
+ 
+sourceCompatibility = 11
+targetCompatibility = 11
+ 
+ tasks.withType(JavaCompile)
+ {
+ options.encoding= 'UTF-8'
+ }
+configurations.all
+{
+resolutionStrategy
+{
+force "io.cucumber:cucumber-core:6.11.0"
+}
+}
+
+
+dependencies
+{
+	implementation "org.slf4j:slf4j-simple:1.7.9"
+    implementation group: 'net.serenity-bdd', name: 'serenity-core', version: '2.6.0'
+    implementation group: 'net.serenity-bdd', name: 'serenity-cucumber6', version: '2.6.0'
+    implementation group: 'net.serenity-bdd', name: 'serenity-junit', version: '2.6.0'
+    implementation group: 'net.serenity-bdd', name: 'serenity-screenplay', version: '2.6.0'
+    implementation group: 'net.serenity-bdd', name: 'serenity-screenplay-webdriver', version: '2.6.0'
+    implementation group: 'net.serenity-bdd', name: 'serenity-ensure', version: '2.6.0'
+    implementation group: 'org.springframework', name: 'spring-core', version: '5.3.14'
+    
+    
+test
+    {
+    systemProperties System.getProperties()
+    systemProperty "file.encoding","UTF-8"
+    testLogging.showStandardStreams = true
+    finalizedBy(aggregate)
+    }
+}
